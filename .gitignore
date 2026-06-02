@@ -1,0 +1,46 @@
+# =====================================================================
+# .gitignore — web-ui-automation-playwright
+# Se ignora todo lo volátil (entornos, navegadores, reportes, evidencia).
+# =====================================================================
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Pruebas / caches
+.pytest_cache/
+.cache/
+
+# Allure (resultados y reporte; se regeneran con pytest)
+allure-results/
+allure-report/
+.allure/
+
+# Evidencia de ejecución (screenshots, videos, traces)
+test-results/
+screenshots/
+videos/
+*.webm
+*.zip
+
+# Playwright (navegadores y artefactos locales)
+playwright-report/
+.playwright/
+
+# Credenciales / secretos (por si acaso)
+.env
+.env.*
+*.pem
+*.key
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

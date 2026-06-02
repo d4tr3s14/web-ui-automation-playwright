@@ -1,0 +1,5 @@
+# Normaliza saltos de línea a LF (consistencia multiplataforma).
+* text=auto eol=lf
+
+# Asegura que los .feature se reconozcan como Gherkin.
+*.feature linguist-language=Gherkin

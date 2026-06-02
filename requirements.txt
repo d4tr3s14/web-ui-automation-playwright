@@ -1,0 +1,13 @@
+# Framework de automatización Web UI con Playwright + BDD + Allure.
+
+# --- Automatización del navegador ---
+playwright~=1.48
+
+# --- Pruebas / BDD ---
+pytest~=8.3
+pytest-bdd~=8.1
+
+# --- Reportería ---
+allure-pytest~=2.13
+
+# Tras instalar, ejecutar una vez:  playwright install chromium
