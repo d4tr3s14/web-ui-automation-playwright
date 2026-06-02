@@ -10,12 +10,26 @@ class InventoryPage(BasePage):
     TITLE = ".title"
     ITEM = ".inventory_item"
     ITEM_NAME = ".inventory_item_name"
+    ITEM_PRICE = ".inventory_item_price"
     CART_BADGE = ".shopping_cart_badge"
     CART_LINK = ".shopping_cart_link"
     SORT = ".product_sort_container"
+    MENU_BUTTON = "#react-burger-menu-btn"
+    LOGOUT = "#logout_sidebar_link"
 
     def is_loaded(self) -> bool:
         return self.is_visible(self.TITLE) and self.text(self.TITLE) == "Products"
+
+    def product_count(self) -> int:
+        return self.count(self.ITEM)
+
+    def prices(self) -> list[float]:
+        raw = self.page.locator(self.ITEM_PRICE).all_text_contents()
+        return [float(p.strip().lstrip("$")) for p in raw]
+
+    def logout(self) -> None:
+        self.click(self.MENU_BUTTON)
+        self.click(self.LOGOUT)
 
     def add_item_to_cart(self, name: str) -> None:
         item = self.page.locator(self.ITEM).filter(has_text=name)

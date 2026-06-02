@@ -8,10 +8,16 @@ on:
 
 jobs:
   # ---------------------------------------------------------------------
-  # Pruebas de UI con Playwright (headless) contra el demo público
+  # Pruebas de UI con Playwright en varios navegadores (headless)
   # ---------------------------------------------------------------------
   ui-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    env:
+      BROWSER: ${{ matrix.browser }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,29 +30,29 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Install Playwright browser
-        run: playwright install --with-deps chromium
+      - name: Install Playwright browser (${{ matrix.browser }})
+        run: playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Run UI test suite (BDD)
+      - name: Run UI test suite (BDD) on ${{ matrix.browser }}
         run: pytest
 
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
+          name: allure-results-${{ matrix.browser }}
           path: allure-results
 
       - name: Upload failure evidence (videos / traces)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: evidence
+          name: evidence-${{ matrix.browser }}
           path: test-results
           if-no-files-found: ignore
 
   # ---------------------------------------------------------------------
-  # Publica el reporte Allure navegable en GitHub Pages (solo push)
+  # Fusiona los resultados de todos los navegadores y publica Allure en Pages
   # ---------------------------------------------------------------------
   publish-report:
     name: Publish Allure report
@@ -56,11 +62,12 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download Allure results
+      - name: Download all Allure results
         uses: actions/download-artifact@v4
         with:
-          name: allure-results
+          pattern: allure-results-*
           path: allure-results
+          merge-multiple: true
 
       - name: Restore Allure history
         uses: actions/checkout@v4

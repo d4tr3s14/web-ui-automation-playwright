@@ -52,12 +52,16 @@ def page(browser, request):
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
     page = context.new_page()
 
+    # Distingue cada ejecución por navegador en el reporte Allure.
+    allure.dynamic.parameter("browser", settings.BROWSER)
+
     yield page
 
-    # --- Evidencia (solo si el test falló) --------------------------------- #
+    # --- Evidencia --------------------------------------------------------- #
     rep = getattr(request.node, "rep_call", None)
     failed = rep is not None and rep.failed
 
+    # Screenshot: solo en fallo (con la página aún abierta).
     if failed:
         try:
             allure.attach(
@@ -68,6 +72,7 @@ def page(browser, request):
         except Exception:  # noqa: BLE001
             pass
 
+    # Trace: solo en fallo (es pesado; se abre con `playwright show-trace`).
     trace_path = artifacts / f"trace-{_slug(request.node.name)}.zip"
     try:
         context.tracing.stop(path=str(trace_path) if failed else None)
@@ -83,18 +88,13 @@ def page(browser, request):
 
     context.close()  # finaliza el archivo de video
 
-    if failed:
-        if video_path and Path(video_path).exists():
-            allure.attach.file(video_path, name="video", attachment_type=allure.attachment_type.WEBM)
-        if trace_path.exists():
-            allure.attach.file(str(trace_path), name="playwright-trace", extension="zip")
-    else:
-        # En tests exitosos no guardamos evidencia (mantiene limpio test-results/).
-        if video_path and Path(video_path).exists():
-            try:
-                Path(video_path).unlink()
-            except OSError:
-                pass
+    # Video: SIEMPRE (también cuando el test termina OK).
+    if video_path and Path(video_path).exists():
+        allure.attach.file(video_path, name="video", attachment_type=allure.attachment_type.WEBM)
+
+    # Trace: adjunto solo cuando hubo fallo.
+    if failed and trace_path.exists():
+        allure.attach.file(str(trace_path), name="playwright-trace", extension="zip")
 
 
 # --------------------------------------------------------------------------- #

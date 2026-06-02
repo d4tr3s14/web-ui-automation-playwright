@@ -25,3 +25,13 @@ Característica: Inicio de sesión en SauceDemo
       | usuario       | password     |
       | usuario_falso | secret_sauce |
       | standard_user | clave_mala   |
+
+  Escenario: No se puede iniciar sesión sin contraseña
+    Dado que estoy en la página de inicio de sesión
+    Cuando ingreso el usuario "standard_user" sin contraseña
+    Entonces veo el mensaje de error "Password is required"
+
+  Escenario: No se puede iniciar sesión sin credenciales
+    Dado que estoy en la página de inicio de sesión
+    Cuando intento iniciar sesión sin credenciales
+    Entonces veo el mensaje de error "Username is required"

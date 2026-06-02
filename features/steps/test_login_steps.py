@@ -28,6 +28,16 @@ def login_custom(login_page, usuario, password):
     login_page.login(usuario, password)
 
 
+@when(parsers.parse('ingreso el usuario "{usuario}" sin contraseña'))
+def login_without_password(login_page, usuario):
+    login_page.login(usuario, "")
+
+
+@when("intento iniciar sesión sin credenciales")
+def login_without_credentials(login_page):
+    login_page.click(login_page.LOGIN_BUTTON)
+
+
 @then("veo la página de productos")
 def see_products(inventory_page):
     assert inventory_page.is_loaded()

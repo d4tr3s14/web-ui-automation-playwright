@@ -13,8 +13,14 @@ class CheckoutPage(BasePage):
     POSTAL_CODE = "#postal-code"
     CONTINUE = '[data-test="continue"]'
 
-    # Paso 2: resumen
+    # Validación
+    ERROR = '[data-test="error"]'
+
+    # Paso 2: resumen del pedido
     FINISH = '[data-test="finish"]'
+    SUBTOTAL = ".summary_subtotal_label"   # "Item total: $29.99"
+    TAX = ".summary_tax_label"             # "Tax: $2.40"
+    TOTAL = ".summary_total_label"         # "Total: $32.39"
 
     # Confirmación
     COMPLETE_HEADER = ".complete-header"
@@ -29,6 +35,23 @@ class CheckoutPage(BasePage):
 
     def finish(self) -> None:
         self.click(self.FINISH)
+
+    def error_message(self) -> str:
+        return self.text(self.ERROR)
+
+    def _money(self, selector: str) -> float:
+        # Extrae el importe de textos como "Item total: $29.99".
+        raw = self.text(selector)
+        return float(raw.split("$")[1].strip())
+
+    def item_total(self) -> float:
+        return self._money(self.SUBTOTAL)
+
+    def tax(self) -> float:
+        return self._money(self.TAX)
+
+    def total(self) -> float:
+        return self._money(self.TOTAL)
 
     def success_message(self) -> str:
         return self.text(self.COMPLETE_HEADER)
