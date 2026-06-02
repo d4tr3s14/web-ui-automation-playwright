@@ -6,6 +6,9 @@
 ![Playwright](https://img.shields.io/badge/Playwright-1.48-2ead33?logo=playwright)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+> 📘 ¿Primera vez o perfil junior? Lee la **[Guía detallada paso a paso](docs/GUIA.md)**
+> (glosario, para qué sirve cada herramienta, ejecución local y CI).
+
 Framework de **automatización de UI web** con **Playwright + Python**, un
 **Page Object Model** bien estructurado y escenarios **BDD (Gherkin + pytest-bdd)**.
 Como sitio bajo prueba se usa el demo público **[SauceDemo](https://www.saucedemo.com)**.
